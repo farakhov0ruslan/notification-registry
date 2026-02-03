@@ -13,7 +13,7 @@ authors = [
 readme = "README.md"
 requires-python = ">=3.12.4,<4.0"
 dependencies = [
-
+    "pydantic>=2.0",
 ]
 
 [dependency-groups]
