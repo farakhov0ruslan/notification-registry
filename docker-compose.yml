@@ -1,7 +1,5 @@
 services:
   notification-registry-smoke:
-    profiles:
-      - tools
     build:
       context: .
       args:
