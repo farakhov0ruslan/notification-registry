@@ -6,6 +6,9 @@ include:
     file: '.uv-gitlab-ci.yml'
     ref: 'main'
   - project: 'sales-trigger/sdk/gitlab-ci-cd'
+    file: '.build-gitlab-ci.yml'
+    ref: 'main'
+  - project: 'sales-trigger/sdk/gitlab-ci-cd'
     file: '.test-gitlab-ci.yml'
     ref: 'main'
 
