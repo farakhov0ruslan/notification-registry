@@ -1,4 +1,5 @@
 import json
+from unittest.mock import patch
 from uuid import uuid4
 
 import pytest
@@ -184,11 +185,11 @@ def test_payload_type_mapping_all_subclass_base():
         assert issubclass(payload_class, BaseNotificationPayload)
 
 
-def test_validate_message_unknown_type_raises(reset_password_payload, mocker):
+def test_validate_message_unknown_type_raises(reset_password_payload):
     message = build_message(reset_password_payload, NotificationType.RESET_PASSWORD)
-    mocker.patch.object(
-        message.metadata, "notification_type", "completely_unknown_type"
-    )
 
-    with pytest.raises((ValueError, KeyError)):
+    with (
+        patch.object(message.metadata, "notification_type", "completely_unknown_type"),
+        pytest.raises((ValueError, KeyError)),
+    ):
         validate_message(message)

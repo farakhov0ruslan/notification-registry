@@ -1,3 +1,6 @@
+from unittest.mock import Mock
+from unittest.mock import patch
+
 from notification_registry import ChannelHandlerSettings
 from notification_registry import NotificationChannel
 from notification_registry import NotificationType
@@ -13,25 +16,23 @@ def test_channel_handler_settings_queue_name():
     assert settings.queue_name == NotificationChannel.WHATSAPP.queue_name
 
 
-def test_create_channel_consumer_forwards_settings(mocker):
-    consumer_cls = mocker.patch(
-        "notification_registry.channel_handler.NotificationConsumer"
-    )
+def test_create_channel_consumer_forwards_settings():
     settings = ChannelHandlerSettings(
         channel=NotificationChannel.WHATSAPP,
         max_retries=7,
         retry_delay=3.5,
     )
-    on_message = mocker.Mock()
-    publisher = mocker.Mock()
-    rabbit_config = mocker.Mock()
+    on_message = Mock()
+    publisher = Mock()
+    rabbit_config = Mock()
 
-    create_channel_consumer(
-        settings=settings,
-        on_message=on_message,
-        publisher=publisher,
-        rabbitmq_config=rabbit_config,
-    )
+    with patch("notification_registry.channel_handler.NotificationConsumer") as consumer_cls:
+        create_channel_consumer(
+            settings=settings,
+            on_message=on_message,
+            publisher=publisher,
+            rabbitmq_config=rabbit_config,
+        )
 
     assert consumer_cls.call_args.kwargs["queue_name"] == "notification.whatsapp"
     assert consumer_cls.call_args.kwargs["on_message"] is on_message
@@ -40,10 +41,8 @@ def test_create_channel_consumer_forwards_settings(mocker):
     assert consumer_cls.call_args.kwargs["retry_delay"] == 3.5
 
 
-def test_delivery_failed_callback_publishes_platform_message(
-    mocker, reset_password_message
-):
-    publisher = mocker.Mock()
+def test_delivery_failed_callback_publishes_platform_message(reset_password_message):
+    publisher = Mock()
     settings = ChannelHandlerSettings(
         channel=NotificationChannel.WHATSAPP,
         max_retries=5,

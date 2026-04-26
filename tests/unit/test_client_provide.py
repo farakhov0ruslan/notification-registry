@@ -1,14 +1,13 @@
-from pytest_mock import MockerFixture
+from unittest.mock import patch
 
 from notification_registry import LocalNotificationClient
 from notification_registry import RabbitMQNotificationClient
 from notification_registry import provide_notification_client
 
 
-def test_main_environment_returns_rabbit_client(mocker: MockerFixture):
-    mocker.patch("notification_registry.client.RabbitPublisher")
-
-    client = provide_notification_client("main")
+def test_main_environment_returns_rabbit_client():
+    with patch("notification_registry.client.RabbitPublisher"):
+        client = provide_notification_client("main")
 
     assert isinstance(client, RabbitMQNotificationClient)
 
