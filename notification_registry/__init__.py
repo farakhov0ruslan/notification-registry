@@ -13,6 +13,7 @@ from notification_registry.message import NotificationMetadata
 from notification_registry.models import AnalyticsPayload
 from notification_registry.models import BaseNotificationPayload
 from notification_registry.models import DeliveryFailedPayload
+from notification_registry.models import GreetingPayload
 from notification_registry.models import LinkedInDisconnectedPayload
 from notification_registry.models import ResetPasswordPayload
 from notification_registry.processors import BaseChannelProcessor
@@ -39,6 +40,7 @@ __all__ = [
     "ResetPasswordPayload",
     "LinkedInDisconnectedPayload",
     "DeliveryFailedPayload",
+    "GreetingPayload",
     "NotificationMessage",
     "NotificationMetadata",
     "serialize_message",

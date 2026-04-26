@@ -10,6 +10,9 @@ class NotificationType(StrEnum):
     # Системные типы
     DELIVERY_FAILED = "delivery_failed"
 
+    # Приветственные уведомления
+    GREETING = "greeting"
+
     # Будущие типы
     # WELCOME = "welcome" # noqa: ERA001
     # LOGIN = "login" # noqa: ERA001

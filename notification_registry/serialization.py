@@ -6,6 +6,7 @@ from notification_registry.message import NotificationMessage
 from notification_registry.models import AnalyticsPayload
 from notification_registry.models import BaseNotificationPayload
 from notification_registry.models import DeliveryFailedPayload
+from notification_registry.models import GreetingPayload
 from notification_registry.models import LinkedInDisconnectedPayload
 from notification_registry.models import ResetPasswordPayload
 from notification_registry.types import NotificationType
@@ -19,6 +20,7 @@ PAYLOAD_TYPE_MAPPING: dict[NotificationType, Type[BaseNotificationPayload]] = {
     NotificationType.RESET_PASSWORD: ResetPasswordPayload,
     NotificationType.LINKEDIN_DISCONNECTED: LinkedInDisconnectedPayload,
     NotificationType.DELIVERY_FAILED: DeliveryFailedPayload,
+    NotificationType.GREETING: GreetingPayload,
 }
 
 

@@ -46,6 +46,14 @@ def _process_linkedin_disconnected_webhook(
     )
 
 
+def _process_greeting_webhook(message: NotificationMessage) -> ProcessedNotification:
+    return ProcessedNotification(
+        recipient=str(message.payload.webhook_url),
+        subject=str(message.metadata.notification_type),
+        body=_webhook_body(message),
+    )
+
+
 class _WebhookChannelProcessor(BaseChannelProcessor):
     @property
     def channel_name(self) -> str:
@@ -57,6 +65,7 @@ WebhookChannelProcessor = _WebhookChannelProcessor(
         NotificationType.RESET_PASSWORD: _process_reset_password_webhook,
         NotificationType.ANALYTICS: _process_analytics_webhook,
         NotificationType.LINKEDIN_DISCONNECTED: _process_linkedin_disconnected_webhook,
+        NotificationType.GREETING: _process_greeting_webhook,
     },
     allow_skip_on_missing=False,
 )
