@@ -14,4 +14,3 @@ Notification Registry - это SDK библиотека, которая соде
 Все сервисы системы уведомлений (notification-service, email-handler, platform-handler, webhook-handler, whatsapp-handler) используют этот SDK как общую зависимость.
 
 ## Использование 
-Позже      
