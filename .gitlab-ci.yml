@@ -14,7 +14,10 @@ include:
 
 
 stages:
-  - create_tag
-  - lint
+  - prepare
   - build-and-push
   - test
+
+get-env:
+  rules:
+    - when: never
