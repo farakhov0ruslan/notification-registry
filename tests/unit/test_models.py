@@ -12,8 +12,8 @@ from notification_registry import LinkedInDisconnectedPayload
 from notification_registry import ResetPasswordPayload
 from notification_registry.models.base import PhoneNumber
 
-
 # --- PhoneNumber tests ---
+
 
 def test_phone_number_valid_format():
     phone = PhoneNumber(number="8-900-123-45-67")
@@ -42,6 +42,7 @@ def test_phone_number_invalid_wrong_format():
 
 
 # --- BaseNotificationPayload (via ResetPasswordPayload) ---
+
 
 @pytest.mark.parametrize(
     "field,value",
@@ -79,6 +80,7 @@ def test_user_id_required():
 
 
 # --- AnalyticsPayload ---
+
 
 def test_analytics_payload_valid(analytics_payload):
     assert analytics_payload.report_type is not None
@@ -118,6 +120,7 @@ def test_analytics_invalid_total_leads():
 
 # --- ResetPasswordPayload ---
 
+
 def test_reset_password_payload_valid(reset_password_payload):
     assert reset_password_payload.reset_url is not None
     assert reset_password_payload.expires_at is not None
@@ -152,6 +155,7 @@ def test_reset_password_expires_at_parses_iso_string():
 
 
 # --- LinkedInDisconnectedPayload ---
+
 
 def test_linkedin_disconnected_payload_valid(linkedin_disconnected_payload):
     assert linkedin_disconnected_payload.reconnect_url is not None
@@ -188,6 +192,7 @@ def test_linkedin_optional_fields_are_none():
 
 
 # --- DeliveryFailedPayload ---
+
 
 def test_delivery_failed_payload_valid(delivery_failed_payload):
     assert delivery_failed_payload.original_channel is not None

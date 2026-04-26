@@ -40,16 +40,13 @@ class NotificationClient(ABC):
         self._publish(queue_name=queue_name, body=body)
 
     @abstractmethod
-    def _publish(self, queue_name: str, body: bytes) -> None:
-        ...
+    def _publish(self, queue_name: str, body: bytes) -> None: ...
 
     @abstractmethod
-    def start(self) -> None:
-        ...
+    def start(self) -> None: ...
 
     @abstractmethod
-    def close(self) -> None:
-        ...
+    def close(self) -> None: ...
 
     def __enter__(self) -> "NotificationClient":
         self.start()
@@ -106,9 +103,7 @@ class LocalNotificationClient(NotificationClient):
 
     def _publish(self, queue_name: str, body: bytes) -> None:
         self.published.append((queue_name, body))
-        self._log(
-            f"LocalNotificationClient → {queue_name} ({len(body)} bytes)"
-        )
+        self._log(f"LocalNotificationClient → {queue_name} ({len(body)} bytes)")
         if self.handler is not None:
             self.handler(queue_name, body)
 

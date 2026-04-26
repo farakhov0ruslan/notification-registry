@@ -39,7 +39,9 @@ def test_round_trip_analytics_payload_fields(analytics_message):
 
     assert restored.payload.report_type == analytics_message.payload.report_type
     assert restored.payload.total_leads == analytics_message.payload.total_leads
-    assert restored.payload.active_campaigns == analytics_message.payload.active_campaigns
+    assert (
+        restored.payload.active_campaigns == analytics_message.payload.active_campaigns
+    )
 
 
 def test_round_trip_delivery_failed_payload_fields(delivery_failed_message):
@@ -47,8 +49,13 @@ def test_round_trip_delivery_failed_payload_fields(delivery_failed_message):
 
     restored = deserialize_message(body)
 
-    assert restored.payload.original_channel == delivery_failed_message.payload.original_channel
-    assert restored.payload.error_message == delivery_failed_message.payload.error_message
+    assert (
+        restored.payload.original_channel
+        == delivery_failed_message.payload.original_channel
+    )
+    assert (
+        restored.payload.error_message == delivery_failed_message.payload.error_message
+    )
     assert restored.payload.retry_count == delivery_failed_message.payload.retry_count
 
 
@@ -57,7 +64,13 @@ def test_round_trip_metadata_preserved(reset_password_message):
 
     restored = deserialize_message(body)
 
-    assert restored.metadata.notification_id == reset_password_message.metadata.notification_id
-    assert restored.metadata.notification_type == reset_password_message.metadata.notification_type
+    assert (
+        restored.metadata.notification_id
+        == reset_password_message.metadata.notification_id
+    )
+    assert (
+        restored.metadata.notification_type
+        == reset_password_message.metadata.notification_type
+    )
     assert restored.metadata.channel == reset_password_message.metadata.channel
     assert restored.metadata.priority == reset_password_message.metadata.priority

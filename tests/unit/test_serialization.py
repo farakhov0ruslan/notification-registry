@@ -3,7 +3,6 @@ from uuid import uuid4
 
 import pytest
 
-from notification_registry import AnalyticsPayload
 from notification_registry import NotificationChannel
 from notification_registry import NotificationMessage
 from notification_registry import NotificationMetadata
@@ -50,7 +49,9 @@ def test_serialize_datetime_as_iso(reset_password_message):
     result = serialize_message(reset_password_message)
 
     data = json.loads(result)
-    assert "T" in data["metadata"]["created_at"] or "-" in data["metadata"]["created_at"]
+    assert (
+        "T" in data["metadata"]["created_at"] or "-" in data["metadata"]["created_at"]
+    )
 
 
 @pytest.mark.parametrize(
@@ -87,7 +88,7 @@ def test_deserialize_unknown_notification_type():
 
 
 def test_deserialize_invalid_json():
-    with pytest.raises(Exception):
+    with pytest.raises(Exception): # noqa: B017
         deserialize_message(b"not valid json")
 
 
@@ -108,6 +109,7 @@ def test_deserialize_missing_notification_type():
 
 # --- validate_message ---
 
+
 def test_validate_email_channel_with_recipient_email(reset_password_message):
     result = validate_message(reset_password_message)
 
@@ -118,7 +120,9 @@ def test_validate_email_channel_without_recipient_email(reset_password_payload):
     data = reset_password_payload.model_dump()
     data["recipient_email"] = None
     payload = ResetPasswordPayload.model_validate(data)
-    message = build_message(payload, NotificationType.RESET_PASSWORD, channel=NotificationChannel.EMAIL)
+    message = build_message(
+        payload, NotificationType.RESET_PASSWORD, channel=NotificationChannel.EMAIL
+    )
 
     with pytest.raises(ValueError, match="recipient_email"):
         validate_message(message)
@@ -167,6 +171,7 @@ def test_validate_payload_type_mismatch(analytics_payload):
 
 # --- PAYLOAD_TYPE_MAPPING ---
 
+
 def test_payload_type_mapping_has_all_four_types():
     assert NotificationType.ANALYTICS in PAYLOAD_TYPE_MAPPING
     assert NotificationType.RESET_PASSWORD in PAYLOAD_TYPE_MAPPING
@@ -181,7 +186,9 @@ def test_payload_type_mapping_all_subclass_base():
 
 def test_validate_message_unknown_type_raises(reset_password_payload, mocker):
     message = build_message(reset_password_payload, NotificationType.RESET_PASSWORD)
-    mocker.patch.object(message.metadata, "notification_type", "completely_unknown_type")
+    mocker.patch.object(
+        message.metadata, "notification_type", "completely_unknown_type"
+    )
 
     with pytest.raises((ValueError, KeyError)):
         validate_message(message)

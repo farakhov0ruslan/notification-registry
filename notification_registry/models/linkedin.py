@@ -24,9 +24,7 @@ class LinkedInDisconnectedPayload(BaseNotificationPayload):
         None, description="Сообщение об ошибке если есть"
     )
     reconnect_url: HttpUrl = Field(..., description="URL для повторного подключения")
-    affected_campaigns: int = Field(
-        ..., description="Количество затронутых кампаний"
-    )
+    affected_campaigns: int = Field(..., description="Количество затронутых кампаний")
     active_sequences: int = Field(
         ..., description="Количество активных последовательностей"
     )

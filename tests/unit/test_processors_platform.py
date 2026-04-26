@@ -17,6 +17,7 @@ def test_delivery_failed_returns_processed_notification(delivery_failed_payload)
 
 def test_delivery_failed_recipient_is_user_id(delivery_failed_payload):
     from notification_registry import NotificationChannel
+
     message = build_message(
         delivery_failed_payload,
         NotificationType.DELIVERY_FAILED,
@@ -30,6 +31,7 @@ def test_delivery_failed_recipient_is_user_id(delivery_failed_payload):
 
 def test_delivery_failed_template_id(delivery_failed_payload):
     from notification_registry import NotificationChannel
+
     message = build_message(
         delivery_failed_payload,
         NotificationType.DELIVERY_FAILED,
@@ -43,6 +45,7 @@ def test_delivery_failed_template_id(delivery_failed_payload):
 
 def test_delivery_failed_body_contains_error_message(delivery_failed_payload):
     from notification_registry import NotificationChannel
+
     message = build_message(
         delivery_failed_payload,
         NotificationType.DELIVERY_FAILED,
@@ -56,6 +59,7 @@ def test_delivery_failed_body_contains_error_message(delivery_failed_payload):
 
 def test_delivery_failed_body_contains_retry_count(delivery_failed_payload):
     from notification_registry import NotificationChannel
+
     message = build_message(
         delivery_failed_payload,
         NotificationType.DELIVERY_FAILED,
@@ -69,6 +73,7 @@ def test_delivery_failed_body_contains_retry_count(delivery_failed_payload):
 
 def test_delivery_failed_subject_contains_channel_and_type(delivery_failed_payload):
     from notification_registry import NotificationChannel
+
     message = build_message(
         delivery_failed_payload,
         NotificationType.DELIVERY_FAILED,
@@ -83,6 +88,7 @@ def test_delivery_failed_subject_contains_channel_and_type(delivery_failed_paylo
 
 def test_delivery_failed_template_data_has_failed_at_iso(delivery_failed_payload):
     from notification_registry import NotificationChannel
+
     message = build_message(
         delivery_failed_payload,
         NotificationType.DELIVERY_FAILED,

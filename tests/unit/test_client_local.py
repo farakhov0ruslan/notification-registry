@@ -4,10 +4,6 @@ from notification_registry import LocalNotificationClient
 from notification_registry import NotificationChannel
 from notification_registry import NotificationType
 from notification_registry import deserialize_message
-from notification_registry import serialize_message
-from notification_registry.serialization import validate_message
-from tests.conftest import AnalyticsPayloadFactory
-from tests.conftest import build_message
 
 
 def test_publish_stores_queue_name_and_body(reset_password_message):
@@ -69,6 +65,7 @@ def test_handler_raises_propagates(reset_password_message):
 def test_invalid_message_payload_mismatch_raises_before_publish(analytics_payload):
     from notification_registry import NotificationMessage
     from notification_registry import NotificationMetadata
+
     message = NotificationMessage(
         metadata=NotificationMetadata(
             notification_type=NotificationType.RESET_PASSWORD,
@@ -104,7 +101,7 @@ def test_multiple_publishes_order_preserved(
 def test_context_manager_calls_start_and_close():
     logs = []
 
-    with LocalNotificationClient(logger=logs.append) as client:
+    with LocalNotificationClient(logger=logs.append):
         pass
 
     assert any("started" in log.lower() for log in logs)

@@ -3,7 +3,6 @@ from uuid import UUID
 import pytest
 
 from notification_registry import NotificationChannel
-from notification_registry import NotificationMessage
 from notification_registry import NotificationMetadata
 from notification_registry import NotificationPriority
 from notification_registry import NotificationType
@@ -42,12 +41,12 @@ def test_priority_defaults_to_normal():
 
 
 def test_notification_type_required():
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         NotificationMetadata(channel=NotificationChannel.EMAIL)
 
 
 def test_channel_required():
-    with pytest.raises(Exception):
+    with pytest.raises(Exception):  # noqa: B017
         NotificationMetadata(notification_type=NotificationType.RESET_PASSWORD)
 
 
@@ -75,4 +74,7 @@ def test_message_has_metadata_and_payload(reset_password_message):
 
 
 def test_message_metadata_type_matches(reset_password_message):
-    assert reset_password_message.metadata.notification_type == NotificationType.RESET_PASSWORD
+    assert (
+        reset_password_message.metadata.notification_type
+        == NotificationType.RESET_PASSWORD
+    )

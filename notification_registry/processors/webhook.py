@@ -18,7 +18,9 @@ def _webhook_body(message: NotificationMessage) -> str:
     )
 
 
-def _process_reset_password_webhook(message: NotificationMessage) -> ProcessedNotification:
+def _process_reset_password_webhook(
+    message: NotificationMessage,
+) -> ProcessedNotification:
     return ProcessedNotification(
         recipient=str(message.payload.webhook_url),
         subject=str(message.metadata.notification_type),
@@ -34,7 +36,9 @@ def _process_analytics_webhook(message: NotificationMessage) -> ProcessedNotific
     )
 
 
-def _process_linkedin_disconnected_webhook(message: NotificationMessage) -> ProcessedNotification:
+def _process_linkedin_disconnected_webhook(
+    message: NotificationMessage,
+) -> ProcessedNotification:
     return ProcessedNotification(
         recipient=str(message.payload.webhook_url),
         subject=str(message.metadata.notification_type),

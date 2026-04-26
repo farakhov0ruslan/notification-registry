@@ -1,11 +1,14 @@
 import json
 
-import pytest
-
 from notification_registry import serialize_message
 
-
-METADATA_KEYS = {"notification_id", "notification_type", "channel", "priority", "created_at"}
+METADATA_KEYS = {
+    "notification_id",
+    "notification_type",
+    "channel",
+    "priority",
+    "created_at",
+}
 
 
 def test_reset_password_wire_format(reset_password_message):
@@ -15,8 +18,13 @@ def test_reset_password_wire_format(reset_password_message):
     assert set(data.keys()) == {"metadata", "payload"}
     assert set(data["metadata"].keys()) == METADATA_KEYS
     required_payload_fields = {
-        "user_id", "recipient_email", "reset_url", "expires_at",
-        "user_name", "user_ip", "user_agent",
+        "user_id",
+        "recipient_email",
+        "reset_url",
+        "expires_at",
+        "user_name",
+        "user_ip",
+        "user_agent",
     }
     assert required_payload_fields <= set(data["payload"].keys())
 
@@ -28,9 +36,14 @@ def test_analytics_wire_format(analytics_message):
     assert set(data.keys()) == {"metadata", "payload"}
     assert set(data["metadata"].keys()) == METADATA_KEYS
     required_payload_fields = {
-        "user_id", "recipient_email", "report_type",
-        "period_start", "period_end", "total_leads",
-        "active_campaigns", "engagement_rate",
+        "user_id",
+        "recipient_email",
+        "report_type",
+        "period_start",
+        "period_end",
+        "total_leads",
+        "active_campaigns",
+        "engagement_rate",
     }
     assert required_payload_fields <= set(data["payload"].keys())
 
@@ -42,8 +55,13 @@ def test_linkedin_disconnected_wire_format(linkedin_disconnected_message):
     assert set(data.keys()) == {"metadata", "payload"}
     assert set(data["metadata"].keys()) == METADATA_KEYS
     required_payload_fields = {
-        "user_id", "recipient_email", "disconnected_at",
-        "reason", "reconnect_url", "affected_campaigns", "active_sequences",
+        "user_id",
+        "recipient_email",
+        "disconnected_at",
+        "reason",
+        "reconnect_url",
+        "affected_campaigns",
+        "active_sequences",
     }
     assert required_payload_fields <= set(data["payload"].keys())
 
@@ -55,8 +73,12 @@ def test_delivery_failed_wire_format(delivery_failed_message):
     assert set(data.keys()) == {"metadata", "payload"}
     assert set(data["metadata"].keys()) == METADATA_KEYS
     required_payload_fields = {
-        "user_id", "original_channel", "original_type",
-        "error_message", "retry_count", "failed_at",
+        "user_id",
+        "original_channel",
+        "original_type",
+        "error_message",
+        "retry_count",
+        "failed_at",
     }
     assert required_payload_fields <= set(data["payload"].keys())
 

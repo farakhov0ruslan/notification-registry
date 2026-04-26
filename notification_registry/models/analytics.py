@@ -11,9 +11,7 @@ class AnalyticsPayload(BaseNotificationPayload):
     Payload для аналитических отчетов и статистики
     """
 
-    report_type: str = Field(
-        ..., description="Тип отчета (daily, weekly, monthly)"
-    )
+    report_type: str = Field(..., description="Тип отчета (daily, weekly, monthly)")
     period_start: datetime = Field(..., description="Начало периода отчета")
     period_end: datetime = Field(..., description="Конец периода отчета")
     total_leads: int = Field(..., description="Общее количество лидов")

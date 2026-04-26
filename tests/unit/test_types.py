@@ -8,7 +8,7 @@ def test_analytics_value_is_stable():
 
 
 def test_reset_password_value_is_stable():
-    assert NotificationType.RESET_PASSWORD == "reset_password"
+    assert NotificationType.RESET_PASSWORD == "reset_password"  # noqa: S105
 
 
 def test_linkedin_disconnected_value_is_stable():
@@ -22,7 +22,10 @@ def test_delivery_failed_value_is_stable():
 def test_notification_type_coercion_from_string():
     assert NotificationType("analytics") == NotificationType.ANALYTICS
     assert NotificationType("reset_password") == NotificationType.RESET_PASSWORD
-    assert NotificationType("linkedin_disconnected") == NotificationType.LINKEDIN_DISCONNECTED
+    assert (
+        NotificationType("linkedin_disconnected")
+        == NotificationType.LINKEDIN_DISCONNECTED
+    )
     assert NotificationType("delivery_failed") == NotificationType.DELIVERY_FAILED
 
 

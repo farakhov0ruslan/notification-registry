@@ -14,7 +14,9 @@ def test_channel_handler_settings_queue_name():
 
 
 def test_create_channel_consumer_forwards_settings(mocker):
-    consumer_cls = mocker.patch("notification_registry.channel_handler.NotificationConsumer")
+    consumer_cls = mocker.patch(
+        "notification_registry.channel_handler.NotificationConsumer"
+    )
     settings = ChannelHandlerSettings(
         channel=NotificationChannel.WHATSAPP,
         max_retries=7,
@@ -38,7 +40,9 @@ def test_create_channel_consumer_forwards_settings(mocker):
     assert consumer_cls.call_args.kwargs["retry_delay"] == 3.5
 
 
-def test_delivery_failed_callback_publishes_platform_message(mocker, reset_password_message):
+def test_delivery_failed_callback_publishes_platform_message(
+    mocker, reset_password_message
+):
     publisher = mocker.Mock()
     settings = ChannelHandlerSettings(
         channel=NotificationChannel.WHATSAPP,
@@ -52,7 +56,10 @@ def test_delivery_failed_callback_publishes_platform_message(mocker, reset_passw
     )(serialize_message(reset_password_message))
 
     publisher.publish.assert_called_once()
-    assert publisher.publish.call_args.kwargs["queue"] == NotificationChannel.PLATFORM.queue_name
+    assert (
+        publisher.publish.call_args.kwargs["queue"]
+        == NotificationChannel.PLATFORM.queue_name
+    )
     failed = deserialize_message(publisher.publish.call_args.kwargs["message"].encode())
     assert failed.metadata.notification_type == NotificationType.DELIVERY_FAILED
     assert failed.payload.original_channel == "whatsapp"

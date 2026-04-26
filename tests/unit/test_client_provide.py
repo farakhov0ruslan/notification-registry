@@ -1,4 +1,3 @@
-import pytest
 from pytest_mock import MockerFixture
 
 from notification_registry import LocalNotificationClient

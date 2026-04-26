@@ -137,7 +137,9 @@ def reset_password_message(reset_password_payload):
 
 @pytest.fixture
 def linkedin_disconnected_message(linkedin_disconnected_payload):
-    return build_message(linkedin_disconnected_payload, NotificationType.LINKEDIN_DISCONNECTED)
+    return build_message(
+        linkedin_disconnected_payload, NotificationType.LINKEDIN_DISCONNECTED
+    )
 
 
 @pytest.fixture

@@ -28,7 +28,6 @@ from notification_registry.serialization import validate_message
 from notification_registry.types import NotificationType
 
 __all__ = [
-
     "NotificationType",
     "NotificationChannel",
     "NotificationPriority",

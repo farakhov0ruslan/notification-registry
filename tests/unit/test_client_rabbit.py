@@ -13,7 +13,9 @@ def test_rabbit_client_publish_delegates_to_publisher(
     mocker: MockerFixture, reset_password_message
 ):
     publisher_mock = mocker.MagicMock()
-    mocker.patch("notification_registry.client.RabbitPublisher", return_value=publisher_mock)
+    mocker.patch(
+        "notification_registry.client.RabbitPublisher", return_value=publisher_mock
+    )
 
     with RabbitMQNotificationClient() as client:
         client.publish(reset_password_message)
@@ -44,9 +46,13 @@ def test_rabbit_client_constructor_with_rabbit_config(mocker: MockerFixture):
     rabbit_publisher_cls.assert_called_once_with(rabbit_config=mock_config)
 
 
-def test_rabbit_client_exit_calls_publisher_exit(mocker: MockerFixture, reset_password_message):
+def test_rabbit_client_exit_calls_publisher_exit(
+    mocker: MockerFixture, reset_password_message
+):
     publisher_mock = mocker.MagicMock()
-    mocker.patch("notification_registry.client.RabbitPublisher", return_value=publisher_mock)
+    mocker.patch(
+        "notification_registry.client.RabbitPublisher", return_value=publisher_mock
+    )
 
     client = RabbitMQNotificationClient()
     client.start()
@@ -59,7 +65,9 @@ def test_rabbit_client_invalid_message_does_not_call_publish(
     mocker: MockerFixture, analytics_payload
 ):
     publisher_mock = mocker.MagicMock()
-    mocker.patch("notification_registry.client.RabbitPublisher", return_value=publisher_mock)
+    mocker.patch(
+        "notification_registry.client.RabbitPublisher", return_value=publisher_mock
+    )
 
     invalid_message = NotificationMessage(
         metadata=NotificationMetadata(
@@ -69,8 +77,7 @@ def test_rabbit_client_invalid_message_does_not_call_publish(
         payload=analytics_payload,
     )
 
-    with RabbitMQNotificationClient() as client:
-        with pytest.raises(ValueError):
-            client.publish(invalid_message)
+    with RabbitMQNotificationClient() as client, pytest.raises(ValueError):
+        client.publish(invalid_message)
 
     publisher_mock.publish.assert_not_called()

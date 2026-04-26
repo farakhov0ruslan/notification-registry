@@ -78,6 +78,8 @@ def validate_message(message: NotificationMessage) -> bool:
     # Проверяем наличие recipient для канала
     field = message.metadata.channel.recipient_field
     if field is not None and not getattr(message.payload, field, None):
-        raise ValueError(f"{field} is required for {message.metadata.channel.value} channel")
+        raise ValueError(
+            f"{field} is required for {message.metadata.channel.value} channel"
+        )
 
     return True
