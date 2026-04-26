@@ -1,5 +1,7 @@
+from unittest.mock import MagicMock
+from unittest.mock import patch
+
 import pytest
-from pytest_mock import MockerFixture
 
 from notification_registry import NotificationChannel
 from notification_registry import NotificationMessage
@@ -10,14 +12,14 @@ from notification_registry import deserialize_message
 
 
 def test_rabbit_client_publish_delegates_to_publisher(
-    mocker: MockerFixture, reset_password_message
+    reset_password_message,
 ):
-    publisher_mock = mocker.MagicMock()
-    mocker.patch(
-        "notification_registry.client.RabbitPublisher", return_value=publisher_mock
-    )
+    publisher_mock = MagicMock()
 
-    with RabbitMQNotificationClient() as client:
+    with (
+        patch("notification_registry.client.RabbitPublisher", return_value=publisher_mock),
+        RabbitMQNotificationClient() as client,
+    ):
         client.publish(reset_password_message)
 
     publisher_mock.__enter__.assert_called_once()
@@ -29,45 +31,39 @@ def test_rabbit_client_publish_delegates_to_publisher(
     publisher_mock.__exit__.assert_called_once()
 
 
-def test_rabbit_client_constructor_without_rabbit_config(mocker: MockerFixture):
-    rabbit_publisher_cls = mocker.patch("notification_registry.client.RabbitPublisher")
+def test_rabbit_client_constructor_without_rabbit_config():
+    with patch("notification_registry.client.RabbitPublisher") as rabbit_publisher_cls:
+        RabbitMQNotificationClient()
 
-    RabbitMQNotificationClient()
-
-    rabbit_publisher_cls.assert_called_once_with(rabbit_config=None)
+        rabbit_publisher_cls.assert_called_once_with(rabbit_config=None)
 
 
-def test_rabbit_client_constructor_with_rabbit_config(mocker: MockerFixture):
-    rabbit_publisher_cls = mocker.patch("notification_registry.client.RabbitPublisher")
-    mock_config = mocker.MagicMock()
+def test_rabbit_client_constructor_with_rabbit_config():
+    mock_config = MagicMock()
 
-    RabbitMQNotificationClient(rabbit_config=mock_config)
+    with patch("notification_registry.client.RabbitPublisher") as rabbit_publisher_cls:
+        RabbitMQNotificationClient(rabbit_config=mock_config)
 
-    rabbit_publisher_cls.assert_called_once_with(rabbit_config=mock_config)
+        rabbit_publisher_cls.assert_called_once_with(rabbit_config=mock_config)
 
 
 def test_rabbit_client_exit_calls_publisher_exit(
-    mocker: MockerFixture, reset_password_message
+    reset_password_message,
 ):
-    publisher_mock = mocker.MagicMock()
-    mocker.patch(
-        "notification_registry.client.RabbitPublisher", return_value=publisher_mock
-    )
+    publisher_mock = MagicMock()
 
-    client = RabbitMQNotificationClient()
-    client.start()
-    client.close()
+    with patch("notification_registry.client.RabbitPublisher", return_value=publisher_mock):
+        client = RabbitMQNotificationClient()
+        client.start()
+        client.close()
 
     publisher_mock.__exit__.assert_called_once_with(None, None, None)
 
 
 def test_rabbit_client_invalid_message_does_not_call_publish(
-    mocker: MockerFixture, analytics_payload
+    analytics_payload,
 ):
-    publisher_mock = mocker.MagicMock()
-    mocker.patch(
-        "notification_registry.client.RabbitPublisher", return_value=publisher_mock
-    )
+    publisher_mock = MagicMock()
 
     invalid_message = NotificationMessage(
         metadata=NotificationMetadata(
@@ -77,7 +73,11 @@ def test_rabbit_client_invalid_message_does_not_call_publish(
         payload=analytics_payload,
     )
 
-    with RabbitMQNotificationClient() as client, pytest.raises(ValueError):
+    with (
+        patch("notification_registry.client.RabbitPublisher", return_value=publisher_mock),
+        RabbitMQNotificationClient() as client,
+        pytest.raises(ValueError),
+    ):
         client.publish(invalid_message)
 
     publisher_mock.publish.assert_not_called()
