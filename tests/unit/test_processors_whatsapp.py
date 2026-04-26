@@ -14,7 +14,7 @@ from notification_registry.processors.whatsapp import WhatsAppChannelProcessor
 
 def _with_phone(payload):
     return payload.model_copy(
-        update={"recipient_phone": PhoneNumber(number="8-999-123-45-67")}
+        update={"recipient_phone": PhoneNumber(number="+79991234567")}
     )
 
 
@@ -50,7 +50,7 @@ def test_whatsapp_processor_returns_template_payload(
     payload = _with_phone(request.getfixturevalue(fixture_name))
     processed = WhatsAppChannelProcessor.process(_message(payload, notification_type))
 
-    assert processed.recipient == "8-999-123-45-67"
+    assert processed.recipient == "+79991234567"
     assert processed.template_id == template_id
     body = json.loads(processed.body)
     assert body["components"]

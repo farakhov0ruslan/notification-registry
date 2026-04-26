@@ -15,9 +15,13 @@ class PhoneNumber(BaseModel):
 
     @model_validator(mode="after")
     def validate_phone_number(self) -> Self:
-        regex = r"8(?:-\d{3}){2}(?:-\d{2}){2}"
+        # E.164: +<country_code><number>, 7-15 digits total
+        regex = r"^\+[1-9]\d{6,14}$"
         if not re.match(regex, self.number):
-            raise ValueError(f"Invalid phone number format: {self.number}")
+            raise ValueError(
+                f"Invalid phone number format: {self.number!r}. "
+                "Expected E.164 format, e.g. +79991234567 or +12025551234"
+            )
         return self
 
 

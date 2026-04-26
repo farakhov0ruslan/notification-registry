@@ -16,19 +16,24 @@ from notification_registry.models.base import PhoneNumber
 
 
 def test_phone_number_valid_format():
-    phone = PhoneNumber(number="8-900-123-45-67")
+    phone = PhoneNumber(number="+79001234567")
 
-    assert phone.number == "8-900-123-45-67"
+    assert phone.number == "+79001234567"
 
 
-def test_phone_number_invalid_plus_format():
+def test_phone_number_valid_international():
+    phone = PhoneNumber(number="+12025551234")
+    assert phone.number == "+12025551234"
+
+
+def test_phone_number_invalid_ru_dash_format():
     with pytest.raises(ValidationError):
-        PhoneNumber(number="+79001234567")
+        PhoneNumber(number="8-900-123-45-67")
 
 
-def test_phone_number_invalid_no_dashes():
+def test_phone_number_invalid_no_plus():
     with pytest.raises(ValidationError):
-        PhoneNumber(number="89001234567")
+        PhoneNumber(number="79001234567")
 
 
 def test_phone_number_invalid_text():
