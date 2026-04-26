@@ -31,3 +31,6 @@ stages:
   - build-and-push
   - test
 
+get-env:
+  rules:
+    - when: never
