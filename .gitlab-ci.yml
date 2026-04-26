@@ -32,5 +32,6 @@ stages:
   - test
 
 get-env:
-  rules:
-    - when: never
+  only:
+    variables:
+      - '$RUN_GET_ENV == "true"'
