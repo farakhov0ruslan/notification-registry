@@ -13,20 +13,21 @@ workflow:
     - when: never
 
 include:
-  - local: "auto-devops/main/*.yml"
-    rules:
-      - if: '$CI_COMMIT_TAG || $CI_COMMIT_REF_NAME == "main"'
-
-  - local: "auto-devops/staging/*.yml"
-    rules:
-       - if: '$CI_COMMIT_TAG || $CI_COMMIT_REF_NAME == "staging"'
-
-  - local: "auto-devops/develop/*.yml"
-    rules:
-      - if: '$CI_COMMIT_TAG || ($CI_COMMIT_REF_NAME !~ /^(main|staging)$/)'
-
+  - project: 'sales-trigger/sdk/gitlab-ci-cd'
+    file: '.prepare-gitlab-ci.yml'
+    ref: 'main'
+  - project: 'sales-trigger/sdk/gitlab-ci-cd'
+    file: '.uv-gitlab-ci.yml'
+    ref: 'main'
+  - project: 'sales-trigger/sdk/gitlab-ci-cd'
+    file: '.build-gitlab-ci.yml'
+    ref: 'main'
+  - project: 'sales-trigger/sdk/gitlab-ci-cd'
+    file: '.test-gitlab-ci.yml'
+    ref: 'main'
 
 stages:
   - prepare
   - build-and-push
   - test
+
