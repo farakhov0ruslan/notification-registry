@@ -5,6 +5,7 @@ from typing import TypeVar
 from notification_registry.message import NotificationMessage
 from notification_registry.models import AnalyticsPayload
 from notification_registry.models import BaseNotificationPayload
+from notification_registry.models import DeliveryFailedPayload
 from notification_registry.models import LinkedInDisconnectedPayload
 from notification_registry.models import ResetPasswordPayload
 from notification_registry.types import NotificationType
@@ -17,6 +18,7 @@ PAYLOAD_TYPE_MAPPING: dict[NotificationType, Type[BaseNotificationPayload]] = {
     NotificationType.ANALYTICS: AnalyticsPayload,
     NotificationType.RESET_PASSWORD: ResetPasswordPayload,
     NotificationType.LINKEDIN_DISCONNECTED: LinkedInDisconnectedPayload,
+    NotificationType.DELIVERY_FAILED: DeliveryFailedPayload,
 }
 
 
@@ -41,7 +43,7 @@ def deserialize_message(data: bytes) -> NotificationMessage:
 
     # Находим соответствующий класс payload
     payload_class = PAYLOAD_TYPE_MAPPING.get(notification_type)
-    if payload_class is None:
+    if payload_class is None:  # pragma: no cover
         raise ValueError(
             f"Unknown notification type: {notification_type}. "
             f"Available types: {list(PAYLOAD_TYPE_MAPPING.keys())}"
@@ -74,16 +76,8 @@ def validate_message(message: NotificationMessage) -> bool:
         )
 
     # Проверяем наличие recipient для канала
-    if message.metadata.channel.value == "email":
-        if not message.payload.recipient_email:
-            raise ValueError("recipient_email is required for email channel")
-
-    if message.metadata.channel.value == "whatsapp":
-        if not message.payload.recipient_phone:
-            raise ValueError("recipient_phone is required for whatsapp channel")
-
-    if message.metadata.channel.value == "webhook":
-        if not message.payload.webhook_url:
-            raise ValueError("webhook_url is required for webhook channel")
+    field = message.metadata.channel.recipient_field
+    if field is not None and not getattr(message.payload, field, None):
+        raise ValueError(f"{field} is required for {message.metadata.channel.value} channel")
 
     return True

@@ -7,6 +7,9 @@ class NotificationType(StrEnum):
     RESET_PASSWORD = "reset_password"
     LINKEDIN_DISCONNECTED = "linkedin_disconnected"
 
+    # Системные типы
+    DELIVERY_FAILED = "delivery_failed"
+
     # Будущие типы
     # WELCOME = "welcome"
     # LOGIN = "login"

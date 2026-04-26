@@ -4,7 +4,6 @@ from notification_registry.processors.base import ProcessedNotification
 from notification_registry.processors.email import EmailChannelProcessor
 from notification_registry.processors.platform import PlatformChannelProcessor
 from notification_registry.processors.webhook import WebhookChannelProcessor
-from notification_registry.processors.whatsapp import WhatsAppChannelProcessor
 
 __all__ = [
     "BaseChannelProcessor",
@@ -13,5 +12,4 @@ __all__ = [
     "EmailChannelProcessor",
     "PlatformChannelProcessor",
     "WebhookChannelProcessor",
-    "WhatsAppChannelProcessor",
 ]
