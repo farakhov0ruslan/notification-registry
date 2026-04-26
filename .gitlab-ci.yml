@@ -14,6 +14,7 @@ include:
 
 
 stages:
-  - prepare
+  - create_tag
+  - lint
   - build-and-push
   - test
