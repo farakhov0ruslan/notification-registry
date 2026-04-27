@@ -1,0 +1,17 @@
+{
+  "template_id": "analytics",
+  "components": [
+    {
+      "type": "body",
+      "parameters": [
+        {"type": "text", "text": {{ report_type | tojson }}},
+        {"type": "text", "text": {{ period_start | tojson }}},
+        {"type": "text", "text": {{ period_end | tojson }}},
+        {"type": "text", "text": {{ total_leads | string | tojson }}},
+        {"type": "text", "text": {{ active_campaigns | string | tojson }}},
+        {"type": "text", "text": {{ engagement_rate | string | tojson }}},
+        {"type": "text", "text": {{ report_url | tojson }}}
+      ]
+    }
+  ]
+}
