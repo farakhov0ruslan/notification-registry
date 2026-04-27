@@ -20,14 +20,6 @@ def process_delivery_failed_platform(
             f"Type: {payload.original_type}. "
             f"Error: {payload.error_message}"
         ),
-        template_id="delivery_failed",
-        template_data={
-            "original_channel": payload.original_channel,
-            "original_type": payload.original_type,
-            "error_message": payload.error_message,
-            "retry_count": payload.retry_count,
-            "failed_at": payload.failed_at.isoformat(),
-        },
     )
 
 

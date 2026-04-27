@@ -97,5 +97,3 @@ def test_processed_notification_body_required():
 
     assert result.body == "<html/>"
     assert result.subject is None
-    assert result.template_id is None
-    assert result.template_data is None

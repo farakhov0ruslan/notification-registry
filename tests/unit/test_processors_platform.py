@@ -29,20 +29,6 @@ def test_delivery_failed_recipient_is_user_id(delivery_failed_payload):
     assert result.recipient == str(delivery_failed_payload.user_id)
 
 
-def test_delivery_failed_template_id(delivery_failed_payload):
-    from notification_registry import NotificationChannel
-
-    message = build_message(
-        delivery_failed_payload,
-        NotificationType.DELIVERY_FAILED,
-        channel=NotificationChannel.PLATFORM,
-    )
-
-    result = PlatformChannelProcessor.process(message)
-
-    assert result.template_id == "delivery_failed"
-
-
 def test_delivery_failed_body_contains_error_message(delivery_failed_payload):
     from notification_registry import NotificationChannel
 
@@ -84,20 +70,6 @@ def test_delivery_failed_subject_contains_channel_and_type(delivery_failed_paylo
 
     assert delivery_failed_payload.original_channel in result.subject
     assert delivery_failed_payload.original_type in result.subject
-
-
-def test_delivery_failed_template_data_has_failed_at_iso(delivery_failed_payload):
-    from notification_registry import NotificationChannel
-
-    message = build_message(
-        delivery_failed_payload,
-        NotificationType.DELIVERY_FAILED,
-        channel=NotificationChannel.PLATFORM,
-    )
-
-    result = PlatformChannelProcessor.process(message)
-
-    assert "T" in result.template_data["failed_at"]
 
 
 def test_other_type_returns_none(reset_password_message):

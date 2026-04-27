@@ -1,6 +1,5 @@
 from abc import ABC
 from abc import abstractmethod
-from typing import Any
 from typing import Callable
 
 from pydantic import BaseModel
@@ -22,17 +21,9 @@ class NotDefinedConvertMethod(Exception):
 
 
 class ProcessedNotification(BaseModel):
-    """
-    Результат обработки уведомления процессором
-
-    Содержит данные готовые для отправки через конкретный канал
-    """
-
     recipient: str  # email, phone, webhook_url, user_id - зависит от канала
     subject: str | None = None  # для email
-    body: str  # HTML/text для email, JSON для webhook, text для whatsapp
-    template_id: str | None = None  # если используется шаблон
-    template_data: dict[str, Any] | None = None  # данные для рендеринга шаблона
+    body: str  # HTML/text для email, JSON для webhook/whatsapp, text для platform
 
 
 class BaseChannelProcessor(ABC):

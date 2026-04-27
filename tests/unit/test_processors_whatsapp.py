@@ -51,8 +51,8 @@ def test_whatsapp_processor_returns_template_payload(
     processed = WhatsAppChannelProcessor.process(_message(payload, notification_type))
 
     assert processed.recipient == "+79991234567"
-    assert processed.template_id == template_id
     body = json.loads(processed.body)
+    assert body["template_id"] == template_id
     assert body["components"]
     assert body["components"][0]["type"] == "body"
 
