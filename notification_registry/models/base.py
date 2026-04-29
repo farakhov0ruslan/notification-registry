@@ -1,0 +1,26 @@
+import re
+from typing import Self
+from uuid import UUID
+
+from pydantic import BaseModel
+from pydantic import Field
+from pydantic import model_validator
+
+
+class PhoneNumber(BaseModel):
+    number: str
+
+    @model_validator(mode="after")
+    def validate_phone_number(self) -> Self:
+        # E.164: +<country_code><number>, 7-15 digits total
+        regex = r"^\+[1-9]\d{6,14}$"
+        if not re.match(regex, self.number):
+            raise ValueError(
+                f"Invalid phone number format: {self.number!r}. "
+                "Expected E.164 format, e.g. +79991234567 or +12025551234"
+            )
+        return self
+
+
+class BaseNotificationPayload(BaseModel):
+    user_id: UUID = Field(..., description="ID пользователя получателя")

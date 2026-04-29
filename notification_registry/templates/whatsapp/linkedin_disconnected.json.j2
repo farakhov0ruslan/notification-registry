@@ -1,0 +1,16 @@
+{
+  "template_id": "linkedin_disconnected",
+  "components": [
+    {
+      "type": "body",
+      "parameters": [
+        {"type": "text", "text": {{ linkedin_profile_url | tojson }}},
+        {"type": "text", "text": {{ disconnected_at | tojson }}},
+        {"type": "text", "text": {{ reason | tojson }}},
+        {"type": "text", "text": {{ reconnect_url | tojson }}},
+        {"type": "text", "text": {{ affected_campaigns | string | tojson }}},
+        {"type": "text", "text": {{ active_sequences | string | tojson }}}
+      ]
+    }
+  ]
+}

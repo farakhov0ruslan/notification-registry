@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Billing issue on your account{% endblock %}
+{% block content %}
+<h2 style="color: #DC2626;">Action required: billing issue</h2>
+<p style="color: #555555; line-height: 1.6;">
+    Hi {{ user_name }}, there is a billing issue on your account: <strong>{{ issue_type }}</strong>.
+</p>
+<p style="color: #555555; line-height: 1.6;">
+    Please update your payment details to avoid interruption of service.
+</p>
+<a href="{{ billing_url }}" style="display:inline-block;margin-top:20px;padding:12px 24px;background:#4F46E5;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:bold;">
+    Update billing
+</a>
+{% endblock %}

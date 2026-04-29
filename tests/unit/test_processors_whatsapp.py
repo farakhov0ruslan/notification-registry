@@ -1,0 +1,58 @@
+import json
+
+import pytest
+
+from notification_registry import NotDefinedConvertMethod
+from notification_registry import NotificationChannel
+from notification_registry import NotificationMessage
+from notification_registry import NotificationMetadata
+from notification_registry import NotificationPriority
+from notification_registry import NotificationType
+from notification_registry.processors.whatsapp import WhatsAppChannelProcessor
+
+PHONE = "+79991234567"
+
+
+def _message(payload, notification_type):
+    return NotificationMessage(
+        metadata=NotificationMetadata(
+            notification_type=notification_type,
+            channel=NotificationChannel.WHATSAPP,
+            priority=NotificationPriority.NORMAL,
+            recipient_address=PHONE,
+        ),
+        payload=payload,
+    )
+
+
+@pytest.mark.parametrize(
+    ("fixture_name", "notification_type", "template_id"),
+    [
+        ("reset_password_payload", NotificationType.RESET_PASSWORD, "reset_password"),
+        ("analytics_payload", NotificationType.ANALYTICS, "analytics"),
+        (
+            "linkedin_disconnected_payload",
+            NotificationType.LINKEDIN_DISCONNECTED,
+            "linkedin_disconnected",
+        ),
+    ],
+)
+def test_whatsapp_processor_returns_template_payload(
+    request,
+    fixture_name,
+    notification_type,
+    template_id,
+):
+    payload = request.getfixturevalue(fixture_name)
+    processed = WhatsAppChannelProcessor.process(_message(payload, notification_type))
+
+    assert processed.recipient == PHONE
+    body = json.loads(processed.body)
+    assert body["template_id"] == template_id
+    assert body["components"]
+    assert body["components"][0]["type"] == "body"
+
+
+def test_whatsapp_processor_raises_for_unsupported_type(delivery_failed_message):
+    with pytest.raises(NotDefinedConvertMethod):
+        WhatsAppChannelProcessor.process(delivery_failed_message)
