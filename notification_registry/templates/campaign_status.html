@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Campaign update{% endblock %}
+{% block content %}
+<h2 style="color: #333333;">Campaign update</h2>
+<p style="color: #555555; line-height: 1.6;">
+    Your campaign <strong>{{ campaign_name }}</strong> is now <strong>{{ status }}</strong>.
+</p>
+{% if leads_processed is not none %}
+<p style="color: #555555; line-height: 1.6;">
+    Leads processed: <strong>{{ leads_processed }}</strong>
+</p>
+{% endif %}
+{% if campaign_url %}
+<a href="{{ campaign_url }}" style="display:inline-block;margin-top:20px;padding:12px 24px;background:#4F46E5;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:bold;">
+    View campaign
+</a>
+{% endif %}
+{% endblock %}

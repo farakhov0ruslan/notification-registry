@@ -13,12 +13,14 @@ class NotificationType(StrEnum):
     # Приветственные уведомления
     GREETING = "greeting"
 
-    # Будущие типы
-    # WELCOME = "welcome" # noqa: ERA001
-    # LOGIN = "login" # noqa: ERA001
-    # BILLING_PROBLEM = "billing_problem" # noqa: ERA001
-    # LEAD_UPDATE = "lead_update" # noqa: ERA001
-    # CAMPAIGN_STATUS = "campaign_status" # noqa: ERA001
-    # SUBSCRIPTION_EXPIRING = "subscription_expiring" # noqa: ERA001
-    # PAYMENT_RECEIVED = "payment_received" # noqa: ERA001
-    # PAYMENT_FAILED = "payment_failed" # noqa: ERA001
+    # Безопасность аккаунта
+    ACCOUNT_LOGIN = "account_login"
+
+    # Биллинг и подписки
+    BILLING_PROBLEM = "billing_problem"
+    SUBSCRIPTION_EXPIRING = "subscription_expiring"
+    PAYMENT_RECEIVED = "payment_received"
+    PAYMENT_FAILED = "payment_failed"
+
+    # Кампании
+    CAMPAIGN_STATUS = "campaign_status"

@@ -5,17 +5,24 @@ from notification_registry.channels import NotificationChannel
 from notification_registry.channels import NotificationPriority
 from notification_registry.client import LocalNotificationClient
 from notification_registry.client import NotificationClient
+from notification_registry.client import PriorityRabbitPublisher
 from notification_registry.client import RabbitMQNotificationClient
 from notification_registry.client import provide_notification_client
 from notification_registry.consumer import NotificationConsumer
 from notification_registry.message import NotificationMessage
 from notification_registry.message import NotificationMetadata
+from notification_registry.models import AccountLoginPayload
 from notification_registry.models import AnalyticsPayload
 from notification_registry.models import BaseNotificationPayload
+from notification_registry.models import BillingProblemPayload
+from notification_registry.models import CampaignStatusPayload
 from notification_registry.models import DeliveryFailedPayload
 from notification_registry.models import GreetingPayload
 from notification_registry.models import LinkedInDisconnectedPayload
+from notification_registry.models import PaymentFailedPayload
+from notification_registry.models import PaymentReceivedPayload
 from notification_registry.models import ResetPasswordPayload
+from notification_registry.models import SubscriptionExpiringPayload
 from notification_registry.processors import BaseChannelProcessor
 from notification_registry.processors import EmailChannelProcessor
 from notification_registry.processors import NotDefinedConvertMethod
@@ -36,11 +43,17 @@ __all__ = [
     "build_delivery_failed_callback",
     "create_channel_consumer",
     "BaseNotificationPayload",
+    "AccountLoginPayload",
     "AnalyticsPayload",
+    "BillingProblemPayload",
+    "CampaignStatusPayload",
     "ResetPasswordPayload",
     "LinkedInDisconnectedPayload",
     "DeliveryFailedPayload",
     "GreetingPayload",
+    "PaymentFailedPayload",
+    "PaymentReceivedPayload",
+    "SubscriptionExpiringPayload",
     "NotificationMessage",
     "NotificationMetadata",
     "serialize_message",
@@ -54,6 +67,7 @@ __all__ = [
     "PlatformChannelProcessor",
     "WebhookChannelProcessor",
     "NotificationClient",
+    "PriorityRabbitPublisher",
     "RabbitMQNotificationClient",
     "LocalNotificationClient",
     "provide_notification_client",

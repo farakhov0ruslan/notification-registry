@@ -17,7 +17,7 @@ def test_rabbit_client_publish_delegates_to_publisher(
     publisher_mock = MagicMock()
 
     with (
-        patch("notification_registry.client.RabbitPublisher", return_value=publisher_mock),
+        patch("notification_registry.client.PriorityRabbitPublisher", return_value=publisher_mock),
         RabbitMQNotificationClient() as client,
     ):
         client.publish(reset_password_message)
@@ -32,7 +32,7 @@ def test_rabbit_client_publish_delegates_to_publisher(
 
 
 def test_rabbit_client_constructor_without_rabbit_config():
-    with patch("notification_registry.client.RabbitPublisher") as rabbit_publisher_cls:
+    with patch("notification_registry.client.PriorityRabbitPublisher") as rabbit_publisher_cls:
         RabbitMQNotificationClient()
 
         rabbit_publisher_cls.assert_called_once_with(rabbit_config=None)
@@ -41,7 +41,7 @@ def test_rabbit_client_constructor_without_rabbit_config():
 def test_rabbit_client_constructor_with_rabbit_config():
     mock_config = MagicMock()
 
-    with patch("notification_registry.client.RabbitPublisher") as rabbit_publisher_cls:
+    with patch("notification_registry.client.PriorityRabbitPublisher") as rabbit_publisher_cls:
         RabbitMQNotificationClient(rabbit_config=mock_config)
 
         rabbit_publisher_cls.assert_called_once_with(rabbit_config=mock_config)
@@ -52,7 +52,7 @@ def test_rabbit_client_exit_calls_publisher_exit(
 ):
     publisher_mock = MagicMock()
 
-    with patch("notification_registry.client.RabbitPublisher", return_value=publisher_mock):
+    with patch("notification_registry.client.PriorityRabbitPublisher", return_value=publisher_mock):
         client = RabbitMQNotificationClient()
         client.start()
         client.close()
@@ -74,7 +74,7 @@ def test_rabbit_client_invalid_message_does_not_call_publish(
     )
 
     with (
-        patch("notification_registry.client.RabbitPublisher", return_value=publisher_mock),
+        patch("notification_registry.client.PriorityRabbitPublisher", return_value=publisher_mock),
         RabbitMQNotificationClient() as client,
         pytest.raises(ValueError),
     ):

@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Payment confirmed{% endblock %}
+{% block content %}
+<h2 style="color: #16A34A;">Payment confirmed ✓</h2>
+<p style="color: #555555; line-height: 1.6;">
+    Hi {{ user_name }}, we've received your payment of <strong>{{ amount }} {{ currency }}</strong> for the <strong>{{ plan_name }}</strong> plan.
+</p>
+{% if receipt_url %}
+<a href="{{ receipt_url }}" style="display:inline-block;margin-top:20px;padding:12px 24px;background:#4F46E5;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:bold;">
+    View receipt
+</a>
+{% endif %}
+{% endblock %}

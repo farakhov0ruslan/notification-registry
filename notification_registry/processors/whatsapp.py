@@ -24,7 +24,7 @@ def process_reset_password_whatsapp(
 ) -> ProcessedNotification:
     payload: ResetPasswordPayload = message.payload
     return ProcessedNotification(
-        recipient=payload.recipient_phone.number,
+        recipient=message.metadata.recipient_address,
         body=_render("reset_password", payload.model_dump(mode="json")),
     )
 
@@ -34,7 +34,7 @@ def process_linkedin_disconnected_whatsapp(
 ) -> ProcessedNotification:
     payload: LinkedInDisconnectedPayload = message.payload
     return ProcessedNotification(
-        recipient=payload.recipient_phone.number,
+        recipient=message.metadata.recipient_address,
         body=_render("linkedin_disconnected", payload.model_dump(mode="json")),
     )
 
@@ -44,7 +44,7 @@ def process_analytics_whatsapp(
 ) -> ProcessedNotification:
     payload: AnalyticsPayload = message.payload
     return ProcessedNotification(
-        recipient=payload.recipient_phone.number,
+        recipient=message.metadata.recipient_address,
         body=_render("analytics", payload.model_dump(mode="json")),
     )
 

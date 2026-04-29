@@ -20,6 +20,8 @@ dependencies = [
 
 [dependency-groups]
 test = [
+    "pytest>=8",
+    "pytest-cov",
     "utils-library[testing]>=0.0.113",
 ]
 
@@ -55,7 +57,10 @@ force-single-line=true
 requires = ["setuptools>=42"]
 build-backend = "setuptools.build_meta"
 
-[tool.pytest]
+[tool.setuptools.package-data]
+notification_registry = ["templates/*.html", "templates/whatsapp/*.json.j2"]
+
+[tool.pytest.ini_options]
 addopts = "--cov=notification_registry --cov-report=term-missing"
 
 [tool.mypy]

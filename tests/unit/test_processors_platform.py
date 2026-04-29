@@ -57,31 +57,18 @@ def test_delivery_failed_body_contains_retry_count(delivery_failed_payload):
     assert str(delivery_failed_payload.retry_count) in result.body
 
 
-def test_delivery_failed_subject_contains_channel_and_type(delivery_failed_payload):
-    from notification_registry import NotificationChannel
-
-    message = build_message(
-        delivery_failed_payload,
-        NotificationType.DELIVERY_FAILED,
-        channel=NotificationChannel.PLATFORM,
-    )
-
-    result = PlatformChannelProcessor.process(message)
-
-    assert delivery_failed_payload.original_channel in result.subject
-    assert delivery_failed_payload.original_type in result.subject
-
-
-def test_other_type_returns_none(reset_password_message):
+def test_other_type_uses_generic_handler(reset_password_message):
     result = PlatformChannelProcessor.process(reset_password_message)
 
-    assert result is None
+    assert result is not None
+    assert result.subject is None
 
 
-def test_analytics_type_returns_none(analytics_message):
+def test_analytics_type_uses_generic_handler(analytics_message):
     result = PlatformChannelProcessor.process(analytics_message)
 
-    assert result is None
+    assert result is not None
+    assert result.subject is None
 
 
 def test_platform_channel_name():

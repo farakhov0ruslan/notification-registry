@@ -8,14 +8,9 @@ from notification_registry import NotificationMessage
 from notification_registry import NotificationMetadata
 from notification_registry import NotificationPriority
 from notification_registry import NotificationType
-from notification_registry.models.base import PhoneNumber
 from notification_registry.processors.whatsapp import WhatsAppChannelProcessor
 
-
-def _with_phone(payload):
-    return payload.model_copy(
-        update={"recipient_phone": PhoneNumber(number="+79991234567")}
-    )
+PHONE = "+79991234567"
 
 
 def _message(payload, notification_type):
@@ -24,6 +19,7 @@ def _message(payload, notification_type):
             notification_type=notification_type,
             channel=NotificationChannel.WHATSAPP,
             priority=NotificationPriority.NORMAL,
+            recipient_address=PHONE,
         ),
         payload=payload,
     )
@@ -47,10 +43,10 @@ def test_whatsapp_processor_returns_template_payload(
     notification_type,
     template_id,
 ):
-    payload = _with_phone(request.getfixturevalue(fixture_name))
+    payload = request.getfixturevalue(fixture_name)
     processed = WhatsAppChannelProcessor.process(_message(payload, notification_type))
 
-    assert processed.recipient == "+79991234567"
+    assert processed.recipient == PHONE
     body = json.loads(processed.body)
     assert body["template_id"] == template_id
     assert body["components"]

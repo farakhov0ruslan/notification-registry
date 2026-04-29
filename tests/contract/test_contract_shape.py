@@ -7,6 +7,7 @@ METADATA_KEYS = {
     "notification_type",
     "channel",
     "priority",
+    "recipient_address",
     "created_at",
 }
 
@@ -19,7 +20,6 @@ def test_reset_password_wire_format(reset_password_message):
     assert set(data["metadata"].keys()) == METADATA_KEYS
     required_payload_fields = {
         "user_id",
-        "recipient_email",
         "reset_url",
         "expires_at",
         "user_name",
@@ -37,7 +37,6 @@ def test_analytics_wire_format(analytics_message):
     assert set(data["metadata"].keys()) == METADATA_KEYS
     required_payload_fields = {
         "user_id",
-        "recipient_email",
         "report_type",
         "period_start",
         "period_end",
@@ -56,7 +55,6 @@ def test_linkedin_disconnected_wire_format(linkedin_disconnected_message):
     assert set(data["metadata"].keys()) == METADATA_KEYS
     required_payload_fields = {
         "user_id",
-        "recipient_email",
         "disconnected_at",
         "reason",
         "reconnect_url",

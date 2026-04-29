@@ -49,33 +49,9 @@ def test_phone_number_invalid_wrong_format():
 # --- BaseNotificationPayload (via ResetPasswordPayload) ---
 
 
-@pytest.mark.parametrize(
-    "field,value",
-    [
-        ("recipient_email", "not-an-email"),
-        ("recipient_email", "user@.test"),
-    ],
-)
-def test_invalid_email_rejected(reset_password_payload, field, value):
-    data = reset_password_payload.model_dump()
-    data[field] = value
-
-    with pytest.raises(ValidationError):
-        ResetPasswordPayload.model_validate(data)
-
-
-def test_webhook_url_invalid(reset_password_payload):
-    data = reset_password_payload.model_dump()
-    data["webhook_url"] = "not a url"
-
-    with pytest.raises(ValidationError):
-        ResetPasswordPayload.model_validate(data)
-
-
 def test_user_id_required():
     with pytest.raises(ValidationError):
         ResetPasswordPayload(
-            recipient_email="test@example.com",
             reset_url="https://example.com/reset",
             expires_at=datetime.now(UTC),
             user_name="Test",
@@ -97,7 +73,6 @@ def test_analytics_payload_valid(analytics_payload):
 def test_analytics_payload_report_url_optional():
     payload = AnalyticsPayload(
         user_id=uuid4(),
-        recipient_email="test@example.com",
         report_type="weekly",
         period_start=datetime.now(UTC) - timedelta(days=7),
         period_end=datetime.now(UTC),
@@ -113,7 +88,6 @@ def test_analytics_invalid_total_leads():
     with pytest.raises(ValidationError):
         AnalyticsPayload(
             user_id=uuid4(),
-            recipient_email="test@example.com",
             report_type="weekly",
             period_start=datetime.now(UTC) - timedelta(days=7),
             period_end=datetime.now(UTC),
@@ -136,7 +110,6 @@ def test_reset_password_invalid_url():
     with pytest.raises(ValidationError):
         ResetPasswordPayload(
             user_id=uuid4(),
-            recipient_email="test@example.com",
             reset_url="ftp://invalid",
             expires_at=datetime.now(UTC),
             user_name="Test",
@@ -148,7 +121,6 @@ def test_reset_password_invalid_url():
 def test_reset_password_expires_at_parses_iso_string():
     payload = ResetPasswordPayload(
         user_id=uuid4(),
-        recipient_email="test@example.com",
         reset_url="https://example.com/reset",
         expires_at="2024-01-26T10:00:00",
         user_name="Test",
@@ -173,7 +145,6 @@ def test_linkedin_reconnect_url_required():
     with pytest.raises(ValidationError):
         LinkedInDisconnectedPayload(
             user_id=uuid4(),
-            recipient_email="test@example.com",
             disconnected_at=datetime.now(UTC),
             reason="session_expired",
             affected_campaigns=3,
@@ -184,7 +155,6 @@ def test_linkedin_reconnect_url_required():
 def test_linkedin_optional_fields_are_none():
     payload = LinkedInDisconnectedPayload(
         user_id=uuid4(),
-        recipient_email="test@example.com",
         disconnected_at=datetime.now(UTC),
         reason="session_expired",
         reconnect_url="https://example.com/reconnect",
@@ -210,7 +180,6 @@ def test_delivery_failed_payload_valid(delivery_failed_payload):
 def test_delivery_failed_retry_count_zero():
     payload = DeliveryFailedPayload(
         user_id=uuid4(),
-        recipient_email="test@example.com",
         original_channel="email",
         original_type="reset_password",
         error_message="timeout",
@@ -225,6 +194,5 @@ def test_delivery_failed_all_fields_required():
     with pytest.raises(ValidationError):
         DeliveryFailedPayload(
             user_id=uuid4(),
-            recipient_email="test@example.com",
             original_channel="email",
         )

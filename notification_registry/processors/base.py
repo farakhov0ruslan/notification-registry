@@ -22,7 +22,7 @@ class NotDefinedConvertMethod(Exception):
 
 class ProcessedNotification(BaseModel):
     recipient: str  # email, phone, webhook_url, user_id - зависит от канала
-    subject: str | None = None  # для email
+    subject: str | None = None  # тема письма для email
     body: str  # HTML/text для email, JSON для webhook/whatsapp, text для platform
 
 
@@ -40,15 +40,17 @@ class BaseChannelProcessor(ABC):
             NotificationType, Callable[[NotificationMessage], ProcessedNotification]
         ],
         allow_skip_on_missing: bool = False,
+        default_handler: Callable[[NotificationMessage], ProcessedNotification] | None = None,
     ):
         """
         Args:
             mapper: словарь {тип_уведомления: функция_обработки}
-            allow_skip_on_missing: если True, пропускать уведомления
-                                   для которых нет обработчика
+            allow_skip_on_missing: если True, пропускать уведомления без обработчика
+            default_handler: обработчик для типов, отсутствующих в mapper
         """
         self.mapper = mapper
         self.allow_skip_on_missing = allow_skip_on_missing
+        self.default_handler = default_handler
 
     @property
     @abstractmethod
@@ -62,8 +64,9 @@ class BaseChannelProcessor(ABC):
         notification_type = message.metadata.notification_type
 
         if notification_type not in self.mapper:
+            if self.default_handler is not None:
+                return self.default_handler(message)
             if self.allow_skip_on_missing:
-                # Пропускаем уведомление
                 return None
             raise NotDefinedConvertMethod(notification_type, self.channel_name)
 

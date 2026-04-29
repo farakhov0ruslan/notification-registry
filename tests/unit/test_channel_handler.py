@@ -52,7 +52,7 @@ def test_delivery_failed_callback_publishes_platform_message(reset_password_mess
     build_delivery_failed_callback(
         publisher=publisher,
         settings=settings,
-    )(serialize_message(reset_password_message))
+    )(serialize_message(reset_password_message), None)
 
     publisher.publish.assert_called_once()
     assert (
@@ -63,3 +63,21 @@ def test_delivery_failed_callback_publishes_platform_message(reset_password_mess
     assert failed.metadata.notification_type == NotificationType.DELIVERY_FAILED
     assert failed.payload.original_channel == "whatsapp"
     assert failed.payload.error_message == "WhatsApp delivery failed after all retries"
+
+
+def test_delivery_failed_callback_uses_actual_error_when_provided(reset_password_message):
+    publisher = Mock()
+    settings = ChannelHandlerSettings(
+        channel=NotificationChannel.EMAIL,
+        max_retries=5,
+        failed_error_message="Email delivery failed after all retries",
+    )
+    actual_error = "SMTP error: 550 mailbox not found"
+
+    build_delivery_failed_callback(
+        publisher=publisher,
+        settings=settings,
+    )(serialize_message(reset_password_message), actual_error)
+
+    failed = deserialize_message(publisher.publish.call_args.kwargs["message"].encode())
+    assert failed.payload.error_message == actual_error

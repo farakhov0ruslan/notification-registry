@@ -2,13 +2,20 @@ import json
 from typing import Type
 from typing import TypeVar
 
+from notification_registry.channels import NotificationChannel
 from notification_registry.message import NotificationMessage
+from notification_registry.models import AccountLoginPayload
 from notification_registry.models import AnalyticsPayload
 from notification_registry.models import BaseNotificationPayload
+from notification_registry.models import BillingProblemPayload
+from notification_registry.models import CampaignStatusPayload
 from notification_registry.models import DeliveryFailedPayload
 from notification_registry.models import GreetingPayload
 from notification_registry.models import LinkedInDisconnectedPayload
+from notification_registry.models import PaymentFailedPayload
+from notification_registry.models import PaymentReceivedPayload
 from notification_registry.models import ResetPasswordPayload
+from notification_registry.models import SubscriptionExpiringPayload
 from notification_registry.types import NotificationType
 
 T = TypeVar("T", bound=BaseNotificationPayload)
@@ -21,6 +28,12 @@ PAYLOAD_TYPE_MAPPING: dict[NotificationType, Type[BaseNotificationPayload]] = {
     NotificationType.LINKEDIN_DISCONNECTED: LinkedInDisconnectedPayload,
     NotificationType.DELIVERY_FAILED: DeliveryFailedPayload,
     NotificationType.GREETING: GreetingPayload,
+    NotificationType.ACCOUNT_LOGIN: AccountLoginPayload,
+    NotificationType.BILLING_PROBLEM: BillingProblemPayload,
+    NotificationType.CAMPAIGN_STATUS: CampaignStatusPayload,
+    NotificationType.SUBSCRIPTION_EXPIRING: SubscriptionExpiringPayload,
+    NotificationType.PAYMENT_RECEIVED: PaymentReceivedPayload,
+    NotificationType.PAYMENT_FAILED: PaymentFailedPayload,
 }
 
 
@@ -77,11 +90,13 @@ def validate_message(message: NotificationMessage) -> bool:
             f"got {type(message.payload).__name__}"
         )
 
-    # Проверяем наличие recipient для канала
-    field = message.metadata.channel.recipient_field
-    if field is not None and not getattr(message.payload, field, None):
+    # Проверяем наличие recipient_address для не-платформенных каналов
+    if (
+        message.metadata.channel != NotificationChannel.PLATFORM
+        and not message.metadata.recipient_address
+    ):
         raise ValueError(
-            f"{field} is required for {message.metadata.channel.value} channel"
+            f"recipient_address is required for {message.metadata.channel.value} channel"
         )
 
     return True

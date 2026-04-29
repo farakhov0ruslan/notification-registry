@@ -10,11 +10,13 @@
 удобно для разработки без брокера и для тестов.
 """
 
+import time
 from abc import ABC
 from abc import abstractmethod
 from typing import Callable
 from typing import Optional
 
+from pika import BasicProperties
 from utils_library.RabbitMQ.publisher import RabbitPublisher
 from utils_library.RabbitMQ.rabbitmq import RabbitMQConfig
 
@@ -23,6 +25,63 @@ from notification_registry.serialization import serialize_message
 from notification_registry.serialization import validate_message
 
 LocalHandler = Callable[[str, bytes], None]
+
+# Must match _MAX_QUEUE_PRIORITY in consumer.py
+_MAX_QUEUE_PRIORITY = 10
+
+
+class PriorityRabbitPublisher(RabbitPublisher):
+    """RabbitPublisher that declares priority queues and publishes with message priority.
+
+    Overrides _publish() and publish() to pass a priority integer through the
+    thread-safe callback — the base class doesn't support this parameter.
+    Both queue declaration and message properties use the same MAX_PRIORITY cap.
+    """
+
+    def _publish(
+        self,
+        message: str,
+        queue: str,
+        exchange: str = "",
+        declare_queue: bool = True,
+        message_ttl: int = None,
+        priority: int = 0,
+    ) -> None:
+        if queue not in self._declared_queues and declare_queue:
+            self._channel.queue_declare(
+                queue=queue,
+                durable=True,
+                auto_delete=False,
+                arguments={"x-max-priority": _MAX_QUEUE_PRIORITY},
+            )
+            self._declared_queues.append(queue)
+
+        self._channel.basic_publish(
+            exchange,
+            queue,
+            body=message.encode(),
+            mandatory=True,
+            properties=BasicProperties(
+                expiration=str(message_ttl) if message_ttl else None,
+                priority=min(priority, _MAX_QUEUE_PRIORITY),
+            ),
+        )
+
+    def publish(
+        self,
+        message: str,
+        queue: str,
+        exchange: str = "",
+        declare_queue: bool = True,
+        message_ttl: int = None,
+        priority: int = 0,
+    ) -> None:
+        if not self.is_alive():
+            raise RuntimeError("RabbitMQ is not working")
+        self._connection.add_callback_threadsafe(
+            lambda: self._publish(message, queue, exchange, declare_queue, message_ttl, priority)
+        )
+        time.sleep(0.04)
 
 
 class NotificationClient(ABC):
@@ -37,10 +96,11 @@ class NotificationClient(ABC):
         validate_message(message)
         body = serialize_message(message)
         queue_name = message.metadata.channel.queue_name
-        self._publish(queue_name=queue_name, body=body)
+        priority = message.metadata.priority.rabbitmq_priority if message.metadata.priority else 0
+        self._publish(queue_name=queue_name, body=body, priority=priority)
 
     @abstractmethod
-    def _publish(self, queue_name: str, body: bytes) -> None: ...
+    def _publish(self, queue_name: str, body: bytes, priority: int = 0) -> None: ...
 
     @abstractmethod
     def start(self) -> None: ...
@@ -57,13 +117,13 @@ class NotificationClient(ABC):
 
 
 class RabbitMQNotificationClient(NotificationClient):
-    """Обёртка над `utils_library.RabbitPublisher` (sync pika).
+    """Обёртка над PriorityRabbitPublisher (sync pika).
 
     Сам publisher — поток, поэтому start/close управляют его жизненным циклом.
     """
 
     def __init__(self, rabbit_config: Optional[RabbitMQConfig] = None) -> None:
-        self._publisher = RabbitPublisher(rabbit_config=rabbit_config)
+        self._publisher = PriorityRabbitPublisher(rabbit_config=rabbit_config)
 
     def start(self) -> None:
         self._publisher.__enter__()
@@ -71,8 +131,8 @@ class RabbitMQNotificationClient(NotificationClient):
     def close(self) -> None:
         self._publisher.__exit__(None, None, None)
 
-    def _publish(self, queue_name: str, body: bytes) -> None:
-        self._publisher.publish(message=body.decode("utf-8"), queue=queue_name)
+    def _publish(self, queue_name: str, body: bytes, priority: int = 0) -> None:
+        self._publisher.publish(message=body.decode("utf-8"), queue=queue_name, priority=priority)
 
 
 class LocalNotificationClient(NotificationClient):
@@ -101,7 +161,7 @@ class LocalNotificationClient(NotificationClient):
             f"({len(self.published)} messages collected)"
         )
 
-    def _publish(self, queue_name: str, body: bytes) -> None:
+    def _publish(self, queue_name: str, body: bytes, priority: int = 0) -> None:
         self.published.append((queue_name, body))
         self._log(f"LocalNotificationClient → {queue_name} ({len(body)} bytes)")
         if self.handler is not None:

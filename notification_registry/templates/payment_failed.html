@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Payment failed{% endblock %}
+{% block content %}
+<h2 style="color: #DC2626;">Payment failed</h2>
+<p style="color: #555555; line-height: 1.6;">
+    Hi {{ user_name }}, your payment of <strong>{{ amount }} {{ currency }}</strong> could not be processed: <strong>{{ reason }}</strong>.
+</p>
+<p style="color: #555555; line-height: 1.6;">
+    Please update your payment method and try again.
+</p>
+<a href="{{ retry_url }}" style="display:inline-block;margin-top:20px;padding:12px 24px;background:#DC2626;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:bold;">
+    Retry payment
+</a>
+{% endblock %}

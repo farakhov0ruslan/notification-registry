@@ -8,7 +8,6 @@ from notification_registry import NotificationChannel
 from notification_registry import NotificationMessage
 from notification_registry import NotificationMetadata
 from notification_registry import NotificationType
-from notification_registry import ResetPasswordPayload
 from notification_registry import deserialize_message
 from notification_registry import serialize_message
 from notification_registry import validate_message
@@ -111,43 +110,45 @@ def test_deserialize_missing_notification_type():
 # --- validate_message ---
 
 
-def test_validate_email_channel_with_recipient_email(reset_password_message):
+def test_validate_email_channel_with_recipient_address(reset_password_message):
     result = validate_message(reset_password_message)
 
     assert result is True
 
 
-def test_validate_email_channel_without_recipient_email(reset_password_payload):
-    data = reset_password_payload.model_dump()
-    data["recipient_email"] = None
-    payload = ResetPasswordPayload.model_validate(data)
+def test_validate_email_channel_without_recipient_address(reset_password_payload):
     message = build_message(
-        payload, NotificationType.RESET_PASSWORD, channel=NotificationChannel.EMAIL
+        reset_password_payload,
+        NotificationType.RESET_PASSWORD,
+        channel=NotificationChannel.EMAIL,
+        recipient_address=None,
     )
 
-    with pytest.raises(ValueError, match="recipient_email"):
+    with pytest.raises(ValueError, match="recipient_address"):
         validate_message(message)
 
 
-def test_validate_whatsapp_without_recipient_phone(reset_password_payload):
+def test_validate_whatsapp_without_recipient_address(reset_password_payload):
     message = build_message(
         reset_password_payload,
         NotificationType.RESET_PASSWORD,
         channel=NotificationChannel.WHATSAPP,
+        recipient_address=None,
     )
 
-    with pytest.raises(ValueError, match="recipient_phone"):
+    with pytest.raises(ValueError, match="recipient_address"):
         validate_message(message)
 
 
-def test_validate_webhook_without_webhook_url(reset_password_payload):
+def test_validate_webhook_without_recipient_address(reset_password_payload):
     message = build_message(
         reset_password_payload,
         NotificationType.RESET_PASSWORD,
         channel=NotificationChannel.WEBHOOK,
+        recipient_address=None,
     )
 
-    with pytest.raises(ValueError, match="webhook_url"):
+    with pytest.raises(ValueError, match="recipient_address"):
         validate_message(message)
 
 

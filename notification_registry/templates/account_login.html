@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}New login to your account{% endblock %}
+{% block content %}
+<h2 style="color: #333333;">New login detected</h2>
+<p style="color: #555555; line-height: 1.6;">
+    Hi {{ user_name }}, we noticed a new login to your SalesTrigger account.
+</p>
+<p style="color: #555555; line-height: 1.6;">
+    If this was you, no action is needed. If you don't recognise this activity, please reset your password immediately.
+</p>
+<a href="https://app.salestrigger.io/reset-password" style="display:inline-block;margin-top:20px;padding:12px 24px;background:#DC2626;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:bold;">
+    Secure my account
+</a>
+{% endblock %}

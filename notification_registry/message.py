@@ -1,5 +1,6 @@
 from datetime import datetime
 from typing import Generic
+from typing import Optional
 from typing import TypeVar
 from uuid import UUID
 from uuid import uuid4
@@ -23,7 +24,9 @@ class NotificationMetadata(BaseModel):
     priority: NotificationPriority = Field(
         default=NotificationPriority.NORMAL, description="Приоритет обработки"
     )
-
+    recipient_address: Optional[str] = Field(
+        None, description="Адрес доставки (email, телефон, URL — зависит от канала)"
+    )
     created_at: datetime = Field(
         default_factory=datetime.utcnow, description="Время создания"
     )

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Your subscription is expiring{% endblock %}
+{% block content %}
+<h2 style="color: #D97706;">Your subscription expires soon</h2>
+<p style="color: #555555; line-height: 1.6;">
+    Hi {{ user_name }}, your <strong>{{ plan_name }}</strong> plan expires in <strong>{{ days_until_expiry }} day{% if days_until_expiry != 1 %}s{% endif %}</strong>.
+</p>
+<p style="color: #555555; line-height: 1.6;">
+    Renew now to keep access to all features without interruption.
+</p>
+<a href="{{ renewal_url }}" style="display:inline-block;margin-top:20px;padding:12px 24px;background:#4F46E5;color:#ffffff;text-decoration:none;border-radius:6px;font-weight:bold;">
+    Renew subscription
+</a>
+{% endblock %}

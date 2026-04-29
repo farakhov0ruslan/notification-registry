@@ -1,5 +1,4 @@
 from enum import StrEnum
-from typing import Optional
 
 
 class NotificationChannel(StrEnum):
@@ -18,20 +17,6 @@ class NotificationChannel(StrEnum):
         Имя RabbitMQ очереди для канала
         """
         return f"notification.{self.value}"
-
-    @property
-    def recipient_field(self) -> Optional[str]:
-        """
-        Name of the BaseNotificationPayload field this channel requires.
-        None means the channel uses user_id implicitly (PLATFORM).
-        To add a new channel: add one entry here — no other service logic changes.
-        """
-        _fields = {
-            "email": "recipient_email",
-            "webhook": "webhook_url",
-            "whatsapp": "recipient_phone",
-        }
-        return _fields.get(self.value)
 
 
 class NotificationPriority(StrEnum):

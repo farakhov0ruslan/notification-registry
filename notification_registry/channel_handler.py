@@ -33,8 +33,8 @@ def build_delivery_failed_callback(
     *,
     publisher: RabbitPublisher,
     settings: ChannelHandlerSettings,
-) -> Callable[[bytes], None]:
-    def on_max_retries(body: bytes) -> None:
+) -> Callable[[bytes, str | None], None]:
+    def on_max_retries(body: bytes, error: str | None = None) -> None:
         original = deserialize_message(body)
         failed_msg = NotificationMessage(
             metadata=NotificationMetadata(
@@ -44,12 +44,9 @@ def build_delivery_failed_callback(
             ),
             payload=DeliveryFailedPayload(
                 user_id=original.payload.user_id,
-                recipient_email=original.payload.recipient_email,
-                recipient_phone=getattr(original.payload, "recipient_phone", None),
-                webhook_url=getattr(original.payload, "webhook_url", None),
                 original_channel=settings.channel.value,
                 original_type=str(original.metadata.notification_type),
-                error_message=settings.failed_error_message,
+                error_message=error or settings.failed_error_message,
                 retry_count=settings.max_retries,
                 failed_at=datetime.now(UTC),
             ),
@@ -58,6 +55,7 @@ def build_delivery_failed_callback(
         publisher.publish(
             message=serialize_message(failed_msg).decode("utf-8"),
             queue=NotificationChannel.PLATFORM.queue_name,
+            declare_queue=False,  # already declared with x-max-priority by the consumer
         )
 
     return on_max_retries

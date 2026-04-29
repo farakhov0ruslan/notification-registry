@@ -14,7 +14,7 @@ def test_reset_password_renders_correct_recipient(reset_password_payload):
 
     result = EmailChannelProcessor.process(message)
 
-    assert result.recipient == reset_password_payload.recipient_email
+    assert result.recipient == message.metadata.recipient_address
 
 
 def test_reset_password_renders_subject(reset_password_payload):
@@ -85,7 +85,7 @@ def test_analytics_renders_correct_recipient(analytics_payload):
 
     result = EmailChannelProcessor.process(message)
 
-    assert result.recipient == analytics_payload.recipient_email
+    assert result.recipient == message.metadata.recipient_address
 
 
 def test_analytics_renders_subject(analytics_payload):
@@ -142,7 +142,7 @@ def test_linkedin_disconnected_renders_correct_recipient(linkedin_disconnected_p
 
     result = EmailChannelProcessor.process(message)
 
-    assert result.recipient == linkedin_disconnected_payload.recipient_email
+    assert result.recipient == message.metadata.recipient_address
 
 
 def test_linkedin_disconnected_renders_subject(linkedin_disconnected_payload):
